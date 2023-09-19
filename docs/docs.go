@@ -17,7 +17,6 @@ const docTemplate = `{
     "paths": {
         "/auth/login": {
             "post": {
-                "description": "Login a user",
                 "consumes": [
                     "application/json"
                 ],
@@ -40,7 +39,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.JSONResult"
+                            "$ref": "#/definitions/controller.LoginResult"
                         }
                     }
                 }
@@ -48,7 +47,6 @@ const docTemplate = `{
         },
         "/auth/register": {
             "post": {
-                "description": "Register a new user",
                 "consumes": [
                     "application/json"
                 ],
@@ -76,10 +74,65 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/entry": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all entries",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetAllEntriesResult"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Add a new entry",
+                "parameters": [
+                    {
+                        "description": "Entry details",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Entry"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Entry"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "controller.JSONResult": {
+        "controller.GetAllEntriesResult": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.LoginResult": {
             "type": "object",
             "properties": {
                 "jwt": {
@@ -168,12 +221,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
+	Version:          "1.0",
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Simple BE",
+	Description:      "Simple example of BE",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

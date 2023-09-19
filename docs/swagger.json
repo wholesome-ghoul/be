@@ -1,12 +1,14 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Simple example of BE",
+        "title": "Simple BE",
+        "contact": {},
+        "version": "1.0"
     },
     "paths": {
         "/auth/login": {
             "post": {
-                "description": "Login a user",
                 "consumes": [
                     "application/json"
                 ],
@@ -29,7 +31,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.JSONResult"
+                            "$ref": "#/definitions/controller.LoginResult"
                         }
                     }
                 }
@@ -37,7 +39,6 @@
         },
         "/auth/register": {
             "post": {
-                "description": "Register a new user",
                 "consumes": [
                     "application/json"
                 ],
@@ -65,10 +66,65 @@
                     }
                 }
             }
+        },
+        "/entry": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all entries",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetAllEntriesResult"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Add a new entry",
+                "parameters": [
+                    {
+                        "description": "Entry details",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Entry"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Entry"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "controller.JSONResult": {
+        "controller.GetAllEntriesResult": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.LoginResult": {
             "type": "object",
             "properties": {
                 "jwt": {

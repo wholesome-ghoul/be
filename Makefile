@@ -5,7 +5,9 @@ test:
 	ENV=test go test -v ./... $(ARGS)
 
 run:
-	swag init --parseDependency --parseInternal && ENV=dev go run main.go
+	swag fmt && \
+		swag init --parseDependency --parseInternal && \
+		ENV=dev go run main.go
 
 fmt:
 	gofmt -w .

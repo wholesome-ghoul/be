@@ -1,5 +1,10 @@
 definitions:
-  controller.JSONResult:
+  controller.GetAllEntriesResult:
+    properties:
+      data:
+        type: string
+    type: object
+  controller.LoginResult:
     properties:
       jwt:
         type: string
@@ -56,12 +61,14 @@ definitions:
     type: object
 info:
   contact: {}
+  description: Simple example of BE
+  title: Simple BE
+  version: "1.0"
 paths:
   /auth/login:
     post:
       consumes:
       - application/json
-      description: Login a user
       parameters:
       - description: User credentials
         in: body
@@ -75,13 +82,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.JSONResult'
+            $ref: '#/definitions/controller.LoginResult'
       summary: Login a user
   /auth/register:
     post:
       consumes:
       - application/json
-      description: Register a new user
       parameters:
       - description: User credentials
         in: body
@@ -97,4 +103,34 @@ paths:
           schema:
             $ref: '#/definitions/model.User'
       summary: Register a new user
+  /entry:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.GetAllEntriesResult'
+      summary: Get all entries
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Entry details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.Entry'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Entry'
+      summary: Add a new entry
 swagger: "2.0"

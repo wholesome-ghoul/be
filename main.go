@@ -18,6 +18,10 @@ func init() {
 	common.Env()
 }
 
+//	@title			Simple BE
+//	@version		1.0
+//	@description	Simple example of BE
+
 func main() {
 	database.Connect()
 	if err := database.Database.AutoMigrate(&model.User{}, &model.Entry{}); err != nil {

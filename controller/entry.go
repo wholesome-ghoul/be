@@ -8,6 +8,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type GetAllEntriesResult struct {
+	Data string `json:"data"`
+}
+
+//	@BasePath	/api/v1
+
+// AddEntry handles adding a new entry
+//
+//	@Summary	Add a new entry
+//	@Accept		json
+//	@Produce	json
+//	@Param		input	body		model.Entry	true	"Entry details"
+//	@Success	201		{object}	model.Entry
+//	@Router		/entry [post]
 func AddEntry(ctx *gin.Context) {
 	var entry model.Entry
 	if err := ctx.ShouldBindJSON(&entry); err != nil {
@@ -37,6 +51,13 @@ func AddEntry(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, gin.H{"data": savedEntry})
 }
 
+// GetAllEntries handles getting all entries
+//
+//	@Summary	Get all entries
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	GetAllEntriesResult
+//	@Router		/entry [get]
 func GetAllEntries(ctx *gin.Context) {
 	user, err := common.CurrentUser(ctx)
 	if err != nil {

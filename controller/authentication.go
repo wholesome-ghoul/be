@@ -8,20 +8,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type JSONResult struct {
+type LoginResult struct {
 	Jwt string `json:"jwt"`
 }
 
-// @BasePath /api/v1
+//	@BasePath	/api/v1
 
 // Register handles user registration
-// @Summary Register a new user
-// @Description Register a new user
-// @Accept json
-// @Produce json
-// @Param input body model.AuthenticationInput true "User credentials"
-// @Success 201 {object} model.User
-// @Router /auth/register [post]
+//
+//	@Summary	Register a new user
+//	@Accept		json
+//	@Produce	json
+//	@Param		input	body		model.AuthenticationInput	true	"User credentials"
+//	@Success	201		{object}	model.User
+//	@Router		/auth/register [post]
 func Register(ctx *gin.Context) {
 	var input model.AuthenticationInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
@@ -44,13 +44,13 @@ func Register(ctx *gin.Context) {
 }
 
 // Login handles user login
-// @Summary Login a user
-// @Description Login a user
-// @Accept json
-// @Produce json
-// @Param input body model.AuthenticationInput true "User credentials"
-// @Success 200 {object} JSONResult
-// @Router /auth/login [post]
+//
+//	@Summary	Login a user
+//	@Accept		json
+//	@Produce	json
+//	@Param		input	body		model.AuthenticationInput	true	"User credentials"
+//	@Success	200		{object}	LoginResult
+//	@Router		/auth/login [post]
 func Login(ctx *gin.Context) {
 	var input model.AuthenticationInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {

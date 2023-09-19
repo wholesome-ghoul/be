@@ -8,6 +8,12 @@ createdb be-master-dev
 ## Interacting with API
 
 ```bash
+# start dev server
+make run
+
+# interact directly from swagger or with curl
+# API endpoints available at http://localhost:8080/swagger/index.html
+
 # register user
 ./curl/register.sh <username> <password>
 
