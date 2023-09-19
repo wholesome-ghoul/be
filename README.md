@@ -1,7 +1,13 @@
 # Be
 
+## Stack
+
+- Golang
+- Postgresql
+
 ```bash
 # create database
+# createdb be-master-test
 createdb be-master-dev
 ```
 
