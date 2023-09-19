@@ -9,14 +9,6 @@ definitions:
       jwt:
         type: string
     type: object
-  gorm.DeletedAt:
-    properties:
-      time:
-        type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
-    type: object
   model.AuthenticationInput:
     properties:
       password:
@@ -31,31 +23,17 @@ definitions:
     properties:
       content:
         type: string
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      id:
-        type: integer
-      updatedAt:
-        type: string
       userID:
         type: integer
     type: object
   model.User:
     properties:
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
       entries:
         items:
           $ref: '#/definitions/model.Entry'
         type: array
       id:
         type: integer
-      updatedAt:
-        type: string
       username:
         type: string
     type: object

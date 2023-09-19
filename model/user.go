@@ -6,32 +6,40 @@ import (
 	"strings"
 
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 type User struct {
-	gorm.Model
-	Username string `gorm:"size:255;not null;unique" json:"username"`
-	Password string `gorm:"size:255;not null;" json:"-"`
+	ID       uint
+	Username string `json:"username"`
+	Password string `json:"-"`
 	Entries  []Entry
 }
 
 func (user *User) Save() (*User, error) {
-	if err := database.Database.Create(&user).Error; err != nil {
+	if err := user.Prepare(); err != nil {
 		return &User{}, err
 	}
+
+	lastInsertId := 0
+	err := database.Database.QueryRow("INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id", user.Username, user.Password).Scan(&lastInsertId)
+	if err != nil {
+		return &User{}, err
+	}
+
+	user.ID = uint(lastInsertId)
 
 	return user, nil
 }
 
-func (user *User) BeforeSave(*gorm.DB) error {
+func (user *User) Prepare() error {
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 
-	user.Password = string(passwordHash)
 	user.Username = html.EscapeString(strings.TrimSpace(user.Username))
+	user.Password = string(passwordHash)
+
 	return nil
 }
 
@@ -41,7 +49,10 @@ func (user *User) ValidatePassword(password string) error {
 
 func FindUserByUsername(username string) (User, error) {
 	var user User
-	if err := database.Database.Where("username = ?", username).First(&user).Error; err != nil {
+	err := database.Database.
+		QueryRow("SELECT id, username, password FROM users WHERE username = $1", username).
+		Scan(&user.ID, &user.Username, &user.Password)
+	if err != nil {
 		return User{}, err
 	}
 
@@ -50,7 +61,10 @@ func FindUserByUsername(username string) (User, error) {
 
 func FindUserById(id uint) (User, error) {
 	var user User
-	if err := database.Database.Preload("Entries").Where("ID = ?", id).Find(&user).Error; err != nil {
+	err := database.Database.
+		QueryRow("SELECT id, username, password FROM users WHERE id = $1", id).
+		Scan(&user.ID, &user.Username, &user.Password)
+	if err != nil {
 		return User{}, err
 	}
 

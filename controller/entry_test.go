@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"database/sql"
 	"encoding/json"
 	"github/be/common"
 	"github/be/database"
@@ -11,14 +12,14 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/suite"
-	"gorm.io/gorm"
 )
 
 type EntryTestSuite struct {
 	suite.Suite
 	router *gin.Engine
-	db     *gorm.DB
+	db     *sql.DB
 }
 
 var user = model.User{
@@ -30,11 +31,7 @@ func (suite *EntryTestSuite) SetupTest() {
 	common.Env("../")
 
 	database.Connect()
-	if err := database.Database.AutoMigrate(&model.User{}); err != nil {
-		panic(err)
-	}
-
-	if err := database.Database.AutoMigrate(&model.Entry{}); err != nil {
+	if err := database.CreateTables(); err != nil {
 		panic(err)
 	}
 
@@ -61,20 +58,20 @@ func (suite *EntryTestSuite) SetupTest() {
 	suite.db = database.Database
 
 	gin.SetMode(gin.TestMode)
-	suite.router = gin.Default()
+	suite.router = gin.New()
 
 	suite.router.POST("/api/entry", AddEntry)
 	suite.router.GET("/api/entry", GetAllEntries)
 }
 
 func (suite *EntryTestSuite) TearDownTest() {
-	db, _ := suite.db.DB()
+	db := suite.db
 
-	if err := suite.db.Migrator().DropTable(&model.User{}); err != nil {
+	if _, err := db.Exec("DROP TABLE entries"); err != nil {
 		panic(err)
 	}
 
-	if err := suite.db.Migrator().DropTable(&model.Entry{}); err != nil {
+	if _, err := db.Exec("DROP TABLE users"); err != nil {
 		panic(err)
 	}
 

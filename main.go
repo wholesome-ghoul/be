@@ -6,7 +6,6 @@ import (
 	"github/be/database"
 	docs "github/be/docs"
 	"github/be/middleware"
-	"github/be/model"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -24,8 +23,8 @@ func init() {
 
 func main() {
 	database.Connect()
-	if err := database.Database.AutoMigrate(&model.User{}, &model.Entry{}); err != nil {
-		log.Fatalf("Failed to migrate database: %v", err)
+	if err := database.CreateTables(); err != nil {
+		log.Fatalf("Failed to create tables: %v", err)
 	}
 
 	router := gin.Default()

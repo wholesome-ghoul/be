@@ -7,8 +7,8 @@
 
 ```bash
 # create database
-# createdb be-master-test
-createdb be-master-dev
+# createdb be-from-orm-to-psql-test
+createdb be-from-orm-to-psql-dev
 ```
 
 ## Interacting with API

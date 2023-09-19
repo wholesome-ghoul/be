@@ -3,8 +3,6 @@ package model
 import (
 	"errors"
 	"github/be/database"
-
-	"gorm.io/gorm"
 )
 
 type EntryError struct {
@@ -16,8 +14,7 @@ func (e *EntryError) Error() string {
 }
 
 type Entry struct {
-	gorm.Model
-	Content string `gorm:"type:text" json:"content"`
+	Content string `json:"content"`
 	UserID  uint
 }
 
@@ -26,9 +23,28 @@ func (entry *Entry) Save() (*Entry, error) {
 		return &Entry{}, &EntryError{Err: errors.New("content is required")}
 	}
 
-	if err := database.Database.Create(&entry).Error; err != nil {
-		return &Entry{}, &EntryError{Err: err}
+	if _, err := database.Database.Exec("INSERT INTO entries (content, user_id) VALUES ($1, $2)", entry.Content, entry.UserID); err != nil {
+		return &Entry{}, &EntryError{Err: errors.New("couldn't save entry")}
 	}
 
 	return entry, nil
+}
+
+func GetAllEntries(userID uint) ([]Entry, error) {
+	var entries []Entry
+	rows, err := database.Database.Query("SELECT content, user_id FROM entries WHERE user_id = $1", userID)
+	if err != nil {
+		return entries, &EntryError{Err: errors.New("couldn't get entries")}
+	}
+
+	for rows.Next() {
+		var entry Entry
+		if err := rows.Scan(&entry.Content, &entry.UserID); err != nil {
+			return entries, &EntryError{Err: errors.New("couldn't get entries")}
+		}
+
+		entries = append(entries, entry)
+	}
+
+	return entries, nil
 }

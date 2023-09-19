@@ -65,5 +65,11 @@ func GetAllEntries(ctx *gin.Context) {
 		return
 	}
 
+	user.Entries, err = model.GetAllEntries(user.ID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "couldn't get entries"})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{"data": user.Entries})
 }
